@@ -68,7 +68,7 @@ public class DeviceInfoPlugin implements MethodCallHandler {
       build.put("tags", Build.TAGS);
       build.put("type", Build.TYPE);
       build.put("isPhysicalDevice", !isEmulator());
-//      build.put("imei", );
+      build.put("imei", getIMEI());
       Map<String, Object> version = new HashMap<>();
       if (VERSION.SDK_INT >= VERSION_CODES.M) {
         version.put("baseOS", VERSION.BASE_OS);
