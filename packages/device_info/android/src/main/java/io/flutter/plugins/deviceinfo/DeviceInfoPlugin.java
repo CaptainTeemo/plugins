@@ -4,9 +4,13 @@
 
 package io.flutter.plugins.deviceinfo;
 
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
+import android.telephony.TelephonyManager;
+
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
@@ -22,8 +26,12 @@ public class DeviceInfoPlugin implements MethodCallHandler {
   /** Substitute for missing values. */
   private static final String[] EMPTY_STRING_LIST = new String[] {};
 
+  private static final Registrar registrar;
+
   /** Plugin registration. */
   public static void registerWith(Registrar registrar) {
+    DeviceInfoPlugin.registrar = registrar;
+
     final MethodChannel channel =
         new MethodChannel(registrar.messenger(), "plugins.flutter.io/device_info");
     channel.setMethodCallHandler(new DeviceInfoPlugin());
@@ -60,7 +68,7 @@ public class DeviceInfoPlugin implements MethodCallHandler {
       build.put("tags", Build.TAGS);
       build.put("type", Build.TYPE);
       build.put("isPhysicalDevice", !isEmulator());
-
+//      build.put("imei", );
       Map<String, Object> version = new HashMap<>();
       if (VERSION.SDK_INT >= VERSION_CODES.M) {
         version.put("baseOS", VERSION.BASE_OS);
@@ -77,6 +85,16 @@ public class DeviceInfoPlugin implements MethodCallHandler {
     } else {
       result.notImplemented();
     }
+  }
+
+  @RequiresPermission(android.Manifest.permission.READ_PHONE_STATE)
+  private String getIMEI() {
+    String imei = "";
+    String deviceId = ((TelephonyManager)registrar.activity().getApplicationContext().getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
+    if (deviceId != null) {
+      imei = deviceId;
+    }
+    return imei;
   }
 
   /**
