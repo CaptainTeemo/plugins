@@ -26,7 +26,7 @@ public class DeviceInfoPlugin implements MethodCallHandler {
   /** Substitute for missing values. */
   private static final String[] EMPTY_STRING_LIST = new String[] {};
 
-  private static final Registrar registrar;
+  private static Registrar registrar;
 
   /** Plugin registration. */
   public static void registerWith(Registrar registrar) {
@@ -87,7 +87,6 @@ public class DeviceInfoPlugin implements MethodCallHandler {
     }
   }
 
-  @RequiresPermission(android.Manifest.permission.READ_PHONE_STATE)
   private String getIMEI() {
     String imei = "";
     String deviceId = ((TelephonyManager)registrar.activity().getApplicationContext().getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
